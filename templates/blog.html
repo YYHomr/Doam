@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Doam Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .blog-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .blog-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .blog-card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-card-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .blog-card-meta {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        .blog-card-excerpt {
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .btn-read-more {
+            align-self: flex-start;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Doam Online Logo">
+                </a>
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('blog') }}">Blog</a>
+                {% if session.get('logged_in') %}
+                <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Latest News & Updates</h2>
+        
+        <div class="blog-grid">
+            {% for post in posts %}
+            <div class="blog-card">
+                {% if post.images %}
+                <img src="{{ url_for('static', filename='blog_uploads/' + post.images[0]) }}" alt="{{ post.title }}" class="blog-card-image">
+                {% else %}
+                <div class="blog-card-image" style="background: #222; display: flex; align-items: center; justify-content: center; color: #444;">No Image</div>
+                {% endif %}
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">{{ post.created_at }}</div>
+                    <h3 class="blog-card-title">{{ post.title }}</h3>
+                    <p class="blog-card-excerpt">{{ post.content | truncate(150) }}</p>
+                    <a href="{{ url_for('blog_post', index=loop.index0) }}" class="btn btn-primary btn-read-more">Read More</a>
+                </div>
+            </div>
+            {% else %}
+            <p style="color: white; text-align: center; grid-column: 1/-1;">No blog posts yet. Check back later!</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

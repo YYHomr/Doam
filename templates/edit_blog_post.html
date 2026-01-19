@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog Post | Doam Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: white; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .media-inputs {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .btn-add-link {
+            background: #2ecc71;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        .current-media {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Doam Online Logo">
+                </a>
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Edit Blog Post</h2>
+        <div class="glass-panel">
+            <form action="{{ url_for('edit_blog_post', index=index) }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" value="{{ post.title }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" name="content" rows="10" required>{{ post.content }}</textarea>
+                </div>
+                
+                <div class="media-inputs">
+                    <h3>Media & Attachments</h3>
+                    
+                    <div class="form-group">
+                        <label>Images</label>
+                        <div class="current-media">Current: {{ post.images|length }} images</div>
+                        <input type="file" name="images" multiple accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Videos</label>
+                        <div class="current-media">Current: {{ post.videos|length }} videos</div>
+                        <input type="file" name="videos" multiple accept="video/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Files</label>
+                        <div class="current-media">Current: {{ post.files|length }} files</div>
+                        <input type="file" name="files" multiple>
+                    </div>
+                    
+                    <div class="form-group" id="links-container">
+                        <label>Links</label>
+                        {% for link in post.links %}
+                        <input type="text" name="links" value="{{ link }}" style="margin-top: 10px;">
+                        {% endfor %}
+                        <input type="text" name="links" placeholder="https://example.com" style="margin-top: 10px;">
+                    </div>
+                    <div class="btn-add-link" onclick="addLinkField()">+ Add Another Link</div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Update Post</button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn" style="background: #666; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-left: 10px;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function addLinkField() {
+            const container = document.getElementById('links-container');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'links';
+            input.placeholder = 'https://example.com';
+            input.style.marginTop = '10px';
+            container.appendChild(input);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ game.title }} | Doam Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .game-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .game-detail-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+
+        .game-detail-image-section {
+            position: relative;
+        }
+
+        .game-detail-main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px var(--gold-glow);
+        }
+
+        .game-detail-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .game-detail-thumbnail {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-detail-thumbnail:hover {
+            border-color: var(--accent-gold);
+            transform: scale(1.05);
+        }
+
+        .game-detail-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .game-detail-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .game-detail-rating {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-detail-description {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .game-detail-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .game-detail-actions .btn {
+            padding: 18px;
+            font-size: 1rem;
+            border-radius: 12px;
+        }
+
+        .copy-link-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .copy-link-section label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .copy-link-section .copy-link {
+            display: flex;
+            gap: 10px;
+        }
+
+        .copy-link-section input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            color: var(--text-gray);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .copy-link-section .copy-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .copy-link-section .copy-btn:hover {
+            background: var(--accent-gold);
+            color: var(--dark-bg);
+        }
+
+        .related-games-section {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 2px solid var(--glass-border);
+        }
+
+        .related-games-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .related-games-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--accent-gold), transparent);
+        }
+
+        .related-games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .related-game-card {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .related-game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--gold-glow);
+        }
+
+        .related-game-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .related-game-card-info {
+            padding: 15px;
+        }
+
+        .related-game-card-info h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-gold);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .related-game-card-info p {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            gap: 12px;
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .game-detail-header {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .game-detail-title {
+                font-size: 1.8rem;
+            }
+
+            .game-detail-main-image {
+                height: 350px;
+            }
+
+            .game-detail-thumbnails {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .related-games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Doam Online Logo">
+                </a>
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('upload') }}">Upload</a>
+                {% if session.get('logged_in') %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="game-detail-container">
+        <a href="{{ url_for('index') }}" class="back-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Games
+        </a>
+
+        <div class="game-detail-header">
+            <!-- Image Section -->
+            <div class="game-detail-image-section">
+                <img id="mainImage" src="{{ url_for('static', filename='images/' + game.image) if game.image else 'https://via.placeholder.com/600x500?text=No+Preview' }}" alt="{{ game.title }}" class="game-detail-main-image">
+                
+                {% if game.extra_images and game.extra_images|length > 0 %}
+                <div class="game-detail-thumbnails">
+                    {% if game.image %}
+                    <img src="{{ url_for('static', filename='images/' + game.image) }}" alt="{{ game.title }}" class="game-detail-thumbnail" onclick="changeMainImage(this.src)">
+                    {% endif %}
+                    {% for extra_image in game.extra_images %}
+                    <img src="{{ url_for('static', filename='images/' + extra_image) }}" alt="Extra image" class="game-detail-thumbnail" onclick="changeMainImage(this.src)">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Info Section -->
+            <div class="game-detail-info">
+                <h1 class="game-detail-title">{{ game.title }}</h1>
+                
+                <div class="game-detail-rating">
+                    <span>★ {{ game.rating or '5.0' }}</span>
+                </div>
+
+                <div class="game-detail-description">
+                    {{ game.description }}
+                </div>
+
+                <div class="game-detail-actions">
+                    <a href="{{ game.download_link }}" class="btn btn-primary" target="_blank">
+                        ⬇ Download Now
+                    </a>
+                    {% if game.video_link %}
+                    <a href="{{ game.video_link }}" class="btn btn-outline" target="_blank">
+                        ▶ Watch Trailer
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="copy-link-section">
+                    <label>Download Link</label>
+                    <div class="copy-link">
+                        <input type="text" id="downloadUrl" value="{{ game.download_link }}" readonly>
+                        <button class="copy-btn" onclick="copyDownloadLink()">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Games Section -->
+        {% if games|length > 1 %}
+        <div class="related-games-section">
+            <h2 class="related-games-title">More Games</h2>
+            <div class="related-games-grid">
+                {% for other_game in games %}
+                    {% if other_game.title != game.title %}
+                    <a href="{{ url_for('game_detail', index=loop.index0) }}" class="related-game-card">
+                        <img src="{{ url_for('static', filename='images/' + other_game.image) if other_game.image else 'https://via.placeholder.com/400x250?text=No+Preview' }}" alt="{{ other_game.title }}">
+                        <div class="related-game-card-info">
+                            <h4>{{ other_game.title }}</h4>
+                            <p>{{ other_game.description }}</p>
+                        </div>
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="https://discord.gg/SSAcYPyF" target="_blank" class="discord-link" aria-label="Join our Discord">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.045-.32 13.579.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.9.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.099.246.197.372.291a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.899.076.076 0 0 0-.04.107c.36.698.771 1.362 1.225 1.993a.077.077 0 0 0 .084.028 19.876 19.876 0 0 0 6.002-3.03.077.077 0 0 0 .031-.055c.5-5.177-.838-9.673-3.548-13.661a.061.061 0 0 0-.031-.028z"/></svg>
+            </a>
+        </div>
+        <p style="text-align: center; color: var(--text-gray); font-size: 0.8rem; margin-top: 10px;">&copy; 2026 Doam Online. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function changeMainImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        function copyDownloadLink() {
+            const copyText = document.getElementById("downloadUrl");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Download link copied!");
+        }
+    </script>
+</body>
+</html>

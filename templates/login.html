@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricted Access | Doam Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Doam Online Logo">
+                </a>
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 100px;">
+        <div class="glass-panel" style="max-width: 450px; text-align: center;">
+            <h2 style="font-family: 'Orbitron', sans-serif; color: var(--accent-gold); margin-bottom: 30px;">SECURE ACCESS</h2>
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="flash-messages" style="color: #ff4757; margin-bottom: 20px; font-weight: bold;">
+                  {% for message in messages %}
+                    <p>{{ message }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="form-group">
+                    <label for="password">Enter Access Key</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required autofocus style="text-align: center; letter-spacing: 4px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Authorize</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

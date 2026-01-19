@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forge Legend | Doam Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .advanced-toggle {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+        }
+        .advanced-options {
+            display: none;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Doam Online Logo">
+                </a>
+            </div>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Forge New Entry</h2>
+        <div class="glass-panel">
+            <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Game Title</label>
+                    <input type="text" id="title" name="title" placeholder="What is the legend called?" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Game Lore (Description)</label>
+                    <textarea id="description" name="description" placeholder="Describe the journey..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="download_link">Access Link (Download)</label>
+                    <input type="url" id="download_link" name="download_link" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Main Cover Visual (Image)</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+
+                <div class="advanced-toggle" onclick="toggleAdvanced()">Advanced Options ▼</div>
+                
+                <div class="advanced-options" id="advancedOptions">
+                    <div class="form-group">
+                        <label for="video_link">Cinematic Link (YouTube/Video)</label>
+                        <input type="url" id="video_link" name="video_link" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating (0.0 - 5.0)</label>
+                        <input type="number" id="rating" name="rating" step="0.1" min="0" max="5" value="5.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="extra_images">Additional Visuals (Multiple Images)</label>
+                        <input type="file" id="extra_images" name="extra_images" accept="image/*" multiple>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_top" name="is_top">
+                        <label for="is_top" style="margin-bottom: 0;">Mark as Top Game (Featured in loop)</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 1rem;">Forge Entry</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleAdvanced() {
+            const options = document.getElementById('advancedOptions');
+            const toggle = document.querySelector('.advanced-toggle');
+            if (options.style.display === 'block') {
+                options.style.display = 'none';
+                toggle.textContent = 'Advanced Options ▼';
+            } else {
+                options.style.display = 'block';
+                toggle.textContent = 'Advanced Options ▲';
+            }
+        }
+    </script>
+</body>
+</html>
